@@ -1,0 +1,222 @@
+/*
+  Weather Ready CH – style.css
+  ---------------------------------------------------------------
+  Purpose: all visual styling of the app.
+  Layout idea: one centred column that works on phones and desktops.
+  Each scenario has its own colour (blue = flooding, orange = heat,
+  purple = thunderstorms) that is reused on its cards and quiz screens.
+*/
+
+/* ===== 1. COLOUR AND FONT SETTINGS (light mode) =====
+   All colours are defined once here as variables ("tokens").
+   To change the look of the whole app, change the values here only. */
+:root {
+  --bg: #f3f5f7;        /* page background */
+  --surface: #ffffff;   /* background of cards and question boxes */
+  --fg: #17202a;        /* main text colour */
+  --muted: #56636f;     /* secondary text (descriptions, footer) */
+  --line: #d8dee4;      /* borders and empty progress bars */
+  --accent: #e2620f;    /* keyboard focus outline */
+  --ok: #1f7a4a;        /* correct answer text/border */
+  --ok-bg: #e5f3ea;     /* correct answer background */
+  --bad: #b3261e;       /* wrong answer text/border (also the Swiss cross) */
+  --bad-bg: #fbe9e7;    /* wrong answer background */
+  --flood: #1d5fa8;     /* scenario colour: flooding */
+  --heat: #d1480f;      /* scenario colour: heatwaves */
+  --storm: #5b4bb0;     /* scenario colour: thunderstorms */
+
+  /* Fonts: a condensed "road-sign" style face for headings and a readable
+     face for body text. The names after the first one are fallbacks. */
+  --display: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ===== 2. DARK MODE =====
+   Used automatically when the device is set to dark mode.
+   Only the colour values change; the layout stays the same. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #11161b; --surface: #1a2128; --fg: #e8edf1; --muted: #9aa7b2; --line: #2d3740;
+    --accent: #ff8a3d; --ok: #5fcf8f; --ok-bg: #16301f; --bad: #ff8a80; --bad-bg: #3a1d1b;
+    --flood: #6aa8ef; --heat: #ff8a5c; --storm: #a597f0;
+    color-scheme: dark; /* also makes scrollbars and form controls dark */
+  }
+}
+
+/* ===== 3. BASE STYLES ===== */
+* { box-sizing: border-box; }   /* widths include padding and border, which keeps layouts predictable */
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+p { margin: 0; }                /* spacing is handled by "gap" in the layouts below */
+img { max-width: 100%; }
+
+/* The central column: max 680px wide, with at least 16px space on the sides on phones */
+.wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Small dashed notice at the top ("placeholder questions") */
+.demo {
+  font-size: 13px;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+/* App name at the top */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-size: 15px;
+}
+
+/* Swiss cross logo: a red square plus two white bars (made with ::before and ::after) */
+.cross { width: 22px; height: 22px; background: var(--bad); border-radius: 3px; position: relative; flex: none; }
+.cross::before, .cross::after {
+  content: ""; position: absolute; background: #fff;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+}
+.cross::before { width: 12px; height: 4px; }   /* horizontal bar */
+.cross::after  { width: 4px; height: 12px; }   /* vertical bar */
+
+/* Headings */
+h1, h2 { font-family: var(--display); font-weight: 700; line-height: 1.1; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(30px, 7vw, 42px); }      /* grows with screen width, between 30px and 42px */
+h2 { font-size: 26px; }
+
+/* Generic vertical stack used to group the parts of each screen */
+.stack { display: flex; flex-direction: column; gap: 18px; }
+
+/* Visible outline when navigating with the keyboard (accessibility) */
+button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* ===== 4. HOME SCREEN ===== */
+.lead { color: var(--muted); max-width: 60ch; }   /* intro text, limited line length for readability */
+
+/* Row of five coloured bars showing the Swiss official danger levels 1–5 */
+.levels { display: flex; gap: 4px; align-items: center; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.levels span { width: 26px; height: 8px; border-radius: 2px; }
+
+/* List of scenario cards */
+.cards { display: grid; gap: 12px; }
+
+/* One scenario card (it is a button so it works with keyboard and screen readers).
+   --c is the scenario colour, set by app.js on each card. */
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;   /* icon | title + text | "Start" */
+  gap: 14px;
+  align-items: center;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--c);        /* coloured stripe on the left */
+  border-radius: 8px;
+  padding: 16px;
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+}
+.card:hover { border-color: var(--c); }
+.card svg { width: 34px; height: 34px; color: var(--c); }
+.card b { font-family: var(--display); font-size: 22px; display: block; }
+.card small { color: var(--muted); font-size: 15px; }
+.card .go { font-family: var(--display); font-weight: 600; color: var(--c); }
+
+/* ===== 5. QUESTION SCREEN ===== */
+/* Top row: scenario name + question number on the left, progress bars on the right */
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+/* Small uppercase label in the scenario colour */
+.tag { font-family: var(--display); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 14px; color: var(--c); }
+
+/* Progress bars: one bar per question; answered/current ones are coloured */
+.progress { display: flex; gap: 6px; }
+.progress i { width: 28px; height: 6px; border-radius: 3px; background: var(--line); }
+.progress i.done { background: var(--c); }
+
+/* White box containing the question, answer options and feedback */
+.q {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.q h2 { font-size: 24px; }
+
+/* Answer options */
+.opts { display: grid; gap: 10px; }
+.opt {
+  text-align: left; font: inherit; color: var(--fg);
+  background: var(--bg);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+}
+.opt:hover:not(:disabled) { border-color: var(--c); }
+.opt .k { font-family: var(--display); font-weight: 700; color: var(--muted); min-width: 1.2em; }  /* the letter A/B/C */
+.opt:disabled { cursor: default; }                                    /* options are locked after answering */
+.opt.right { border-color: var(--ok); background: var(--ok-bg); }    /* highlights the correct answer */
+.opt.wrong { border-color: var(--bad); background: var(--bad-bg); }  /* highlights a wrong choice */
+
+/* Feedback box shown after answering */
+.fb { border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.fb.ok { background: var(--ok-bg); }
+.fb.no { background: var(--bad-bg); }
+.fb strong { font-family: var(--display); font-size: 20px; }
+.fb.ok strong { color: var(--ok); }
+.fb.no strong { color: var(--bad); }
+.fb a, .sum a { color: var(--fg); font-weight: 600; }
+
+/* ===== 6. BUTTONS ===== */
+.btn {
+  font: inherit; font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: .02em;
+  border: none; border-radius: 8px; padding: 12px 20px; cursor: pointer;
+  background: var(--fg); color: var(--bg);   /* main button: dark on light, light on dark */
+}
+.btn.ghost { background: transparent; color: var(--fg); border: 2px solid var(--line); }  /* secondary button */
+.row { display: flex; gap: 10px; flex-wrap: wrap; }   /* buttons side by side, wrap on small screens */
+
+/* ===== 7. RESULT SCREEN ===== */
+.result-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.score { font-family: var(--display); font-weight: 700; font-size: 64px; line-height: 1; color: var(--c); font-variant-numeric: tabular-nums; }
+
+/* Summary list: one row per question with ✓ / ✗, the correct answer and the source link */
+.sum { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.sum li { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.sum .m { font-weight: 700; }
+.sum .m.y { color: var(--ok); }
+.sum .m.n { color: var(--bad); }
+
+footer { font-size: 13px; color: var(--muted); }
+
+/* ===== 8. REDUCED MOTION =====
+   Respects users who have switched off animations in their system settings. */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

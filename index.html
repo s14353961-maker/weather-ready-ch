@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+  Weather Ready CH – index.html
+  ---------------------------------------------------------------
+  Purpose: the single page of the app. It only contains the page
+  frame (header, an empty <main> and a footer). All screens – home,
+  questions, feedback and final score – are drawn into <main id="app">
+  by js/app.js, using the questions stored in js/content.js.
+
+  How to run: double-click this file to open it in a browser.
+  No server, no installation and no internet connection are needed
+  (only the web fonts need internet; without it, system fonts are used).
+-->
+<html lang="en">
+<head>
+  <!-- Character encoding so that symbols like °C, ✓ and ✗ display correctly -->
+  <meta charset="utf-8">
+
+  <!-- Makes the layout scale correctly on mobile phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Page title shown in the browser tab -->
+  <title>Weather Ready CH</title>
+
+  <!-- Short description used by search engines and link previews -->
+  <meta name="description" content="A short quiz that helps students in Switzerland learn how to stay safe during floods, heatwaves and severe thunderstorms.">
+
+  <!-- Web fonts from Google Fonts (SIL Open Font License).
+       If they cannot load, the fallback fonts defined in style.css are used. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Source+Sans+3:wght@400;600&display=swap">
+
+  <!-- All visual styling (colours, layout, buttons, dark mode) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- Notice that the questions are placeholders until the final content is supplied.
+         Delete this line once the real content has been added to js/content.js. -->
+    <p class="demo">Prototype · placeholder questions · final content will be supplied by the project team</p>
+
+    <!-- App name with a small Swiss cross logo (drawn with CSS, no image file) -->
+    <div class="brand"><span class="cross" aria-hidden="true"></span>Weather Ready CH</div>
+
+    <!-- Main area: js/app.js replaces the content of this element for every screen.
+         aria-live="polite" makes screen readers announce the new screen content. -->
+    <main id="app" aria-live="polite">
+      <!-- Shown only if JavaScript is switched off in the browser -->
+      <noscript>Please enable JavaScript to use this quiz.</noscript>
+    </main>
+
+    <footer>Questions are stored in js/content.js · no accounts, no database, no tracking</footer>
+  </div>
+
+  <!-- 1) Quiz content (questions, answers, explanations, links). Must load first. -->
+  <script src="js/content.js"></script>
+  <!-- 2) App logic that reads the content and builds the screens -->
+  <script src="js/app.js"></script>
+</body>
+</html>
